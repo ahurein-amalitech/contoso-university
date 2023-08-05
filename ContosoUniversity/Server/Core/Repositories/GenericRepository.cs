@@ -15,23 +15,23 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         _dbset = context.Set<T>();
     }
     
-    public async Task<IEnumerable<T>> GetAll()
+    public virtual async Task<IEnumerable<T>> GetAll()
     {
         return await _dbset.ToListAsync();
     }
 
-    public async Task<T?> GetById(int id)
+    public virtual async Task<T?> GetById(int id)
     {
         return await _dbset.FindAsync(id);
     }
 
-    public async Task<bool> Create(T entity)
+    public virtual async Task<bool> Create(T entity)
     {
         await _dbset.AddAsync(entity);
         return true;
     }
 
-    public bool Delete(T entity)
+    public virtual bool Delete(T entity)
     {
          _dbset.Remove(entity);
          return true;
