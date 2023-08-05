@@ -1,0 +1,81 @@
+﻿@page "/students/index"
+@inject IStudentService StudentService
+@implements IDisposable
+
+
+<h2>Students</h2>
+
+<p>
+    <a href="Create">Create New</a>
+</p>
+
+<form href="./Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Find by name:
+            <input type="text" name="SearchString" />
+            <input type="submit" value="Search" class="btn btn-primary" /> |
+            <a href="./Index">Back to full List</a>
+        </p>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a href="./Index">
+                   LastName
+                </a>
+            </th>
+            <th>
+                FirstMidName
+            </th>
+            <th>
+                <a href="./Index" >
+                   EnrollmentDate
+                </a>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var student in StudentService.Students)
+        {
+            <tr>
+                <td>
+                    @student.LastName
+                </td>
+                <td>
+                    @student.FirstMidName
+                </td>
+                <td>
+                    @student.EnrollmentDate
+                </td>
+                <td>
+                    <a href="/students/Edit/@student.ID">Edit</a> |
+                    <a href="/students/Details/@student.ID">Details</a> |
+                    <a href="students/Delete/@student.ID">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@code {
+    protected override async void OnParametersSet()
+    {
+        await StudentService.GetStudents();
+    }
+
+    protected override void OnInitialized()
+    {
+        StudentService.StudentsChanged += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        StudentService.StudentsChanged -= StateHasChanged;
+    }
+}

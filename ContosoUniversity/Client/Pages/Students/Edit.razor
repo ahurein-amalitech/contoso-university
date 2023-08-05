@@ -1,0 +1,90 @@
+﻿@page "/students/edit/{studentId:int}"
+@inject IStudentService StudentService
+
+
+<h1>Edit</h1>
+
+<h4>Student</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <p>@message</p>
+        <EditForm EditContext="@editContext" OnValidSubmit="@OnSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <input type="hidden" @bind-value="StudentModel.ID"/>
+            <div class="form-group">
+                <label class="control-label"></label>
+                <InputText class="form-control" @bind-Value="StudentModel.FirstMidName"/>
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label"></label>
+                <InputText class="form-control" @bind-Value="StudentModel.LastName" />
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label"></label>
+                <InputDate class="form-control" @bind-Value="StudentModel.EnrollmentDate" />
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group my-3">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="./Index">Back to List</a>
+</div>
+
+
+@code {
+    [Parameter]
+    public int StudentId { get; set; }
+    public Student? Student { get; set; }
+    private bool isLoading = false;
+    private EditContext? editContext;
+    private string message = string.Empty;
+
+    private StudentModel StudentModel = new();
+
+    protected override void OnInitialized()
+    {
+        editContext = new(StudentModel);
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        isLoading = true;
+        Student = await StudentService.GetStudent(StudentId);
+        if(Student is not null)
+        {
+            StudentModel.FirstMidName = Student.FirstMidName;
+            StudentModel.LastName = Student.LastName;
+            StudentModel.EnrollmentDate = Student.EnrollmentDate;
+            message = string.Empty;
+        }
+        else
+        {
+            message = "Invalid Student Id";
+        }
+
+        isLoading = false;
+    }
+
+    private void OnSubmit()
+    {
+        if (editContext != null && editContext.Validate())
+        {
+            Student.FirstMidName = StudentModel.FirstMidName;
+            Student.LastName = StudentModel.LastName;
+            Student.EnrollmentDate = StudentModel.EnrollmentDate;
+            Student.ID = Student.ID;
+
+            var student = StudentService.EditStudent(Student);
+            message = "Student updated succesfully";
+        }
+    }
+}

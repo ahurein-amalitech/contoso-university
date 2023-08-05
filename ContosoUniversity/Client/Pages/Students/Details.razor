@@ -1,0 +1,85 @@
+﻿@page "/students/details/{StudentId:int}"
+@inject IStudentService StudentService
+<h1>Details</h1>
+
+<div>
+    <h4>Student</h4>
+    <hr />
+    @if (isLoading)
+    {
+        <p>Loading data...</p>
+    }
+
+    @if(Student is not null)
+    {
+        <dl class="row">
+            <dt class="col-sm-2">
+                LastName
+            </dt>
+            <dd class="col-sm-10">
+                @Student.LastName
+            </dd>
+            <dt class="col-sm-2">
+                FirstMidName
+            </dt>
+            <dd class="col-sm-10">
+                @Student.FirstMidName
+            </dd>
+            <dt class="col-sm-2">
+                EnrollmentDate
+            </dt>
+            <dd class="col-sm-10">
+                @Student.EnrollmentDate
+            </dd>
+            <dt class="col-sm-2">
+                Enrollments
+            </dt>
+            <dd class="col-sm-10">
+                <table class="table">
+                    <tr>
+                        <th>Course Title</th>
+                        <th>Grade</th>
+                    </tr>
+                    @if(Student.Enrollments.Count == 0)
+                    {
+                        <p>No enrollments available for @Student.FirstMidName</p>
+                    }
+                    @foreach(var enrollment in Student.Enrollments)
+                    {
+                        <tr>
+                            <td>
+                                @enrollment.Course?.Title
+                            </td>
+                            <td>
+                                @(enrollment?.Grade == null ? "N/A" : enrollment?.Grade)
+                            </td>
+                        </tr>
+                    }
+
+                </table>
+            </dd>
+        </dl>
+    }else if(Student is null && !isLoading)
+    {
+        <p>Invalid student Id</p>
+    }
+
+</div>
+<div>
+    <a href="./Edit">Edit</a> |
+    <a href="./Index">Back to List</a>
+</div>
+
+@code {
+    [Parameter]
+    public int StudentId { get; set; }
+    public Student? Student { get; set; }  
+    private bool isLoading = false;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        isLoading = true;
+        Student = await StudentService.GetStudent(StudentId);
+        isLoading = false;
+    }
+}
