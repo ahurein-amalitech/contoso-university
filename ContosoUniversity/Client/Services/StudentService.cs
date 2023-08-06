@@ -9,7 +9,7 @@ namespace ContosoUniversity.Client.Services
 
         public event Action StudentsChanged;
 
-        public List<Student> Students { get; set; } = new List<Student>();
+        public IEnumerable<Student> Students { get; set; } = new List<Student>();
 
 
         public StudentService(HttpClient http)
@@ -25,7 +25,8 @@ namespace ContosoUniversity.Client.Services
 
         public async Task GetStudents()
         {
-            var result = await _http.GetFromJsonAsync<ApiResponse<List<Student>>>("/api/student");
+            var result = await _http.GetFromJsonAsync<ApiResponse<IEnumerable<Student>>>("/api/student");
+            Console.WriteLine(result);
             if (result is not null && result.Data is not null)
             {
                 Students = result.Data;

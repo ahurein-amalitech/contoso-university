@@ -1,4 +1,5 @@
 global using ContosoUniversity.Shared;
+using ContosoUniversity.Server.Core.IConfiguration;
 using ContosoUniversity.Server.Core.Repositories;
 using ContosoUniversity.Server.Data;
 using ContosoUniversity.Server.Services;
@@ -18,16 +19,18 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IStudentService, StudentService>();
-builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
-
-app.UseSwaggerUI();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseSwagger();
+    app.UseSwaggerUI();
     app.UseWebAssemblyDebugging();
 }
 else
@@ -43,7 +46,7 @@ else
 //    var context = services.GetRequiredService<SchoolContext>();
 //    context.Database.EnsureCreated();
 //}
-app.UseSwagger();
+
 app.UseHttpsRedirection();
 
 app.UseBlazorFrameworkFiles();

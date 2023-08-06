@@ -1,58 +1,61 @@
-﻿using ContosoUniversity.Server.Core.Repositories;
-using ContosoUniversity.Server.Data;
-using ContosoUniversity.Shared;
+﻿using AutoMapper;
+using ContosoUniversity.Server.Core.IConfiguration;
+using ContosoUniversity.Server.MappingProfiles.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
-namespace ContosoUniversity.Server.Services
+namespace ContosoUniversity.Server.Services;
+
+public class StudentService : IStudentService
 {
-    public class StudentService : IStudentService
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+
+    public StudentService(IUnitOfWork unitOfWork, IMapper mapper)
     {
-        private readonly SchoolContext _context;
-        private readonly IStudentRepository _studentRepository;
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
+    }
 
-        public StudentService(SchoolContext context, IStudentRepository studentRepository)
+    public async Task<ActionResult<ApiResponse<IEnumerable<Student>>>> GetAllStudent()
+    {
+        var students = await _unitOfWork.Students.GetAll();
+        var response = new ApiResponse<IEnumerable<Student>>
         {
-            _context = context;
-            _studentRepository = studentRepository;
-        }
+            Data = students,
+        };
+        return response;
+    }
 
-        public async Task<ActionResult<ApiResponse<List<Student>>>> GetStudents()
-        {   
-            var students = await _context.Students.ToListAsync();
-            var response = new ApiResponse<List<Student>>
-            {
-                Data = students,
-            };
-            return response;
-        }
-
-        public async Task<ApiResponse<Student>> GetStudent(int studentId)
+    public async Task<ApiResponse<Student>> GetStudent(int studentId)
+    {
+        var response = new ApiResponse<Student>();
+        var student = await _unitOfWork.Students.GetById(studentId);
+        if (student == null)
         {
-            var response = new ApiResponse<Student>();
-            var student =  await _context.Students.Include(s => s.Enrollments).ThenInclude(e => e.Course).FirstOrDefaultAsync(s => s.ID == studentId);
-            if(student == null) { 
-                response.Success = false;
-                response.Message = "No student exist with the provided Id";
-            }else
-            {
-                response.Data = student;
-            }
-            return response;
+            response.Success = false;
+            response.Message = "No student exist with the provided Id";
+        }
+        else
+        {
+            response.Data = student;
         }
 
-        public async Task<ApiResponse<Student>> AddStudent(Student Student)
-        {
-            var response = new ApiResponse<Student>();
-            await _context.Students.AddAsync(Student);
-            _context.SaveChanges();
-            response.Data = Student;
-            return response;
-        }
+        return response;
+    }
+    
+    public async Task<ApiResponse<CreateStudentDto>> AddStudent(CreateStudentDto createStudentDto)
+    {
+        var response = new ApiResponse<CreateStudentDto>();
+        var student = _mapper.Map<Student>(createStudentDto);
+        await _unitOfWork.Students.Create(student);
+        await _unitOfWork.CommitChangesToDb();
 
-        public async Task<ApiResponse<Student>> EditStudent(Student student)
-        {
-            throw new NotImplementedException();
-        }
+        response.Data = createStudentDto;
+        return response;
+    }
+
+    public async Task<ApiResponse<Student>> EditStudent(Student student)
+    {
+        throw new NotImplementedException();
     }
 }

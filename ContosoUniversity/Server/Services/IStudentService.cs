@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ContosoUniversity.Server.MappingProfiles.DTOs;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ContosoUniversity.Server.Services
 {
     public interface IStudentService
     {
-        Task<ActionResult<ApiResponse<List<Student>>>> GetStudents();
+        Task<ActionResult<ApiResponse<IEnumerable<Student>>>> GetAllStudent();
         Task<ApiResponse<Student>> GetStudent(int studentId);
-        Task<ApiResponse<Student>> AddStudent(Student student);
+        Task<ApiResponse<CreateStudentDto>> AddStudent(CreateStudentDto student);
 
         Task<ApiResponse<Student>> EditStudent(Student student);
 

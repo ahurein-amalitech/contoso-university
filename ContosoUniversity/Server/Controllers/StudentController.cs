@@ -1,4 +1,6 @@
-﻿using ContosoUniversity.Server.Data;
+﻿using AutoMapper;
+using ContosoUniversity.Server.Data;
+using ContosoUniversity.Server.MappingProfiles.DTOs;
 using ContosoUniversity.Server.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,16 +12,18 @@ namespace ContosoUniversity.Server.Controllers
     public class StudentController : ControllerBase
     {
         private readonly IStudentService _studentService;
+        private readonly IMapper _mapper;
 
-        public StudentController(IStudentService studentService)
+        public StudentController(IStudentService studentService, IMapper mapper)
         {
             _studentService = studentService;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<ActionResult<ApiResponse<List<Student>>>> GetAllStudents()
+        public async Task<ActionResult<ApiResponse<IEnumerable<Student>>>> GetAllStudent()
         {
-            return await _studentService.GetStudents();
+            return await _studentService.GetAllStudent();
         }
 
         [HttpGet("{studentId}")]
@@ -29,9 +33,9 @@ namespace ContosoUniversity.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ApiResponse<Student>>> AddStudent(Student Student)
+        public async Task<ActionResult<ApiResponse<CreateStudentDto>>> AddStudent(CreateStudentDto createStudentDto)
         {
-            return await _studentService.AddStudent(Student);
+            return await _studentService.AddStudent(createStudentDto);
         }
 
         [HttpPut]
