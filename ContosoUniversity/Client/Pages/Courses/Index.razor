@@ -1,0 +1,82 @@
+﻿@* @page "/courses/index" *@
+@* @inject ICourseService CourseService *@
+@* @implements IDisposable *@
+@* *@
+@* *@
+@* <h2>Courses</h2> *@
+@* *@
+@* <p> *@
+@*     <a href="/students/create">Create New</a> *@
+@* </p> *@
+@* *@
+@* <form method="get"> *@
+@*     <div class="form-actions no-color"> *@
+@*         <p> *@
+@*             Find by name: *@
+@*             <input type="text" name="SearchString" /> *@
+@*             <input type="submit" value="Search" class="btn btn-primary" /> | *@
+@*             <a href="/courses/index">Back to full List</a> *@
+@*         </p> *@
+@*     </div> *@
+@* </form> *@
+@* *@
+@* <table class="table"> *@
+@*     <thead> *@
+@*         <tr> *@
+@*             <th> *@
+@*                 <a href="./Index"> *@
+@*                    LastName *@
+@*                 </a> *@
+@*             </th> *@
+@*             <th> *@
+@*                 FirstMidName *@
+@*             </th> *@
+@*             <th> *@
+@*                 <a href="./Index" > *@
+@*                    EnrollmentDate *@
+@*                 </a> *@
+@*             </th> *@
+@*             <th></th> *@
+@*         </tr> *@
+@*     </thead> *@
+@*     <tbody> *@
+@*         @foreach (var student in StudentService.Students) *@
+@*         { *@
+@*             <tr> *@
+@*                 <td> *@
+@*                     @student.LastName *@
+@*                 </td> *@
+@*                 <td> *@
+@*                     @student.FirstMidName *@
+@*                 </td> *@
+@*                 <td> *@
+@*                     @student.EnrollmentDate *@
+@*                 </td> *@
+@*                 <td> *@
+@*                     <a href="/students/Edit/@student.ID">Edit</a> | *@
+@*                     <a href="/students/Details/@student.ID">Details</a> | *@
+@*                     <a href="students/Delete/@student.ID">Delete</a> *@
+@*                 </td> *@
+@*             </tr> *@
+@*         } *@
+@*     </tbody> *@
+@* </table> *@
+@* *@
+@* *@
+@* @code { *@
+@*      *@
+@*     protected override async void OnParametersSet() *@
+@*     { *@
+@*         await CourseService.GetCourses(); *@
+@*     } *@
+@* *@
+@*     protected override void OnInitialized() *@
+@*     { *@
+@*         CourseService.CoursesChanged += StateHasChanged; *@
+@*     } *@
+@* *@
+@*     public void Dispose() *@
+@*     { *@
+@*         CourseService.CoursesChanged -= StateHasChanged; *@
+@*     } *@
+@* } *@

@@ -3,6 +3,7 @@ using ContosoUniversity.Server.Core.IConfiguration;
 using ContosoUniversity.Server.Core.Repositories;
 using ContosoUniversity.Server.Data;
 using ContosoUniversity.Server.Services;
+using ContosoUniversity.Server.Services.Courses;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,6 +22,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<ICourseService, CourseService>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

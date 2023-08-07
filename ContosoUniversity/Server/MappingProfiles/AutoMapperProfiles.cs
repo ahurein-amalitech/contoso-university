@@ -14,5 +14,8 @@ public class AutoMapperProfiles : Profile
         CreateMap<StudentDto, Student>().ReverseMap();
         CreateMap<Student, StudentDto>().ReverseMap();
         CreateMap<EditStudentDto, Student>().ReverseMap();
+
+        CreateMap<UpdateCourseDto, Course>().ReverseMap();
+        CreateMap<CourseDto, Course>().ReverseMap();
     }
 }
