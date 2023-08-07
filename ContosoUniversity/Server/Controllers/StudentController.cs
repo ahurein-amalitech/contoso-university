@@ -38,11 +38,20 @@ namespace ContosoUniversity.Server.Controllers
             return await _studentService.AddStudent(createStudentDto);
         }
 
-        [HttpPut]
-        public async Task<ActionResult<ApiResponse<Student>>> EditStudent(Student Student)
+        [HttpPut("{studentId}")]
+        public async Task<ActionResult<ApiResponse<EditStudentDto>>> EditStudent(int studentId, [FromBody] EditStudentDto student)
         {
-            return await _studentService.EditStudent(Student);
+            return await _studentService.EditStudent(studentId, student);
         }
+        
+        [HttpDelete("{studentId}")]
+        public async Task<ActionResult<ApiResponse<StudentDto>>> DeleteStudent(int studentId)
+        {
+            var response = await _studentService.DeleteStudent(studentId);
+            Console.WriteLine(response);
+            return response;
+        }
+
 
     }
 }

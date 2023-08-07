@@ -15,4 +15,8 @@
     <ProjectReference Include="..\Shared\ContosoUniversity.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Pages\Courses\" />
+  </ItemGroup>
+
 </Project>

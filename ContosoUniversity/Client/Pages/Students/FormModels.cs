@@ -16,4 +16,16 @@ namespace ContosoUniversity.Client.Pages.Students
         [Required]
         public DateTime EnrollmentDate { get; set; }
     }
+    
+    public class StudentModelNoID
+    {
+        [Required]
+        [MinLength(2, ErrorMessage = "Invalid name length")]
+        public string LastName { get; set; }
+        [Required]
+        [MinLength(2, ErrorMessage = "Invalid name length")]
+        public string FirstMidName { get; set; }
+        [Required]
+        public DateTime EnrollmentDate { get; set; }
+    }
 }

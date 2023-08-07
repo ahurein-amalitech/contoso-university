@@ -1,41 +1,72 @@
-﻿@page "/students/delete"
+﻿@page "/students/delete/{StudentId:int}"
+@inject IStudentService StudentService
+@inject NavigationManager NavigationManager
 
 <h1>Delete</h1>
 
-@*<p class="text-danger">@Model.ErrorMessage</p>*@
+<p class="text-danger">@Message</p>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Student</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            LastName
-        </dt>
-        <dd class="col-sm-10">
-            LastName
-        </dd>
-        <dt class="col-sm-2">
-            FirstMidName
-        </dt>
-        <dd class="col-sm-10">
-            FirstMidName
-        </dd>
-        <dt class="col-sm-2">
-            EnrollmentDate
-        </dt>
-        <dd class="col-sm-10">
-            EnrollmentDate
-        </dd>
-    </dl>
+@if (Student is not null)
+{
+    <h3>Are you sure you want to delete this?</h3>
+    <div>
+        <h4>Student</h4>
+        <hr/>
+        <dl class="row">
+            <dt class="col-sm-2">
+                LastName
+            </dt>
+            <dd class="col-sm-10">
+                @Student.LastName
+            </dd>
+            <dt class="col-sm-2">
+                FirstMidName
+            </dt>
+            <dd class="col-sm-10">
+                @Student.LastName
+            </dd>
+            <dt class="col-sm-2">
+                EnrollmentDate
+            </dt>
+            <dd class="col-sm-10">
+                @Student.EnrollmentDate
+            </dd>
+        </dl>
+        <button @onclick="DeleteStudent" class="btn btn-danger"> Delete </button>
+        <a href="/students/index">Back to List</a>
+    </div>
+}
+else
+{
+    <p>Invalid student Id</p>
+}
 
-    <form method="post">
-        <input type="hidden" asp-for="Student.ID" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a href="./Index">Back to List</a>
-    </form>
-</div>
 
 @code {
+    [Parameter]
+    public int StudentId { get; set; }
+    public Student? Student { get; set; }  
+    private bool isLoading = false;
+    
+    private string Message { get; set; }
 
+    protected override async Task OnParametersSetAsync()
+    {
+        isLoading = true;
+        Student = await StudentService.GetStudent(StudentId);
+        isLoading = false;
+    }
+
+    private async Task DeleteStudent()
+    {
+       bool status = await StudentService.DeleteStudent(StudentId);
+        if (status)
+        {
+            NavigationManager.NavigateTo("/students/index");
+        }
+        else
+        {
+            Message = "Encountered an error deleting student";
+        }
+    }
 }

@@ -1,32 +1,37 @@
 ﻿@page "/students/create"
+@using System.Diagnostics
+@inject IStudentService StudentService
+@inject NavigationManager NavigationManager
 
 <h1>Create</h1>
-
 <h4>Student</h4>
 <hr />
 <div class="row">
+    <p>@Message</p>
     <div class="col-md-4">
-        <form method="post">
+        <EditForm EditContext="@editContext" OnValidSubmit="@OnSubmit">
+            <DataAnnotationsValidator/>
+            <ValidationSummary/>
             <div class="text-danger"></div>
-            <div class="form-group">
-                <label class="control-label"></label>
-                <input  class="form-control" />
+            <div class="form-group mb-3">
+                <label class="control-label">First name</label>
+                <InputText class="form-control" @bind-Value="StudentModel.FirstMidName"/>
                 <span class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label class="control-label"></label>
-                <input  class="form-control" />
+            <div class="form-group mb-3">
+                <label class="control-label">Last name</label>
+                <InputText class="form-control" @bind-Value="StudentModel.LastName" />
                 <span class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label class="control-label"></label>
-                <input class="form-control" />
+            <div class="form-group mb-3">
+                <label class="control-label">Enroll date</label>
+                <InputDate class="form-control" @bind-Value="StudentModel.EnrollmentDate" />
                 <span class="text-danger"></span>
             </div>
-            <div class="form-group mt-3">
-                <input type="submit" value="Create" class="btn btn-primary" />
+            <div class="form-group my-3">
+                <input type="submit" value="Save" class="btn btn-primary" />
             </div>
-        </form>
+        </EditForm>
     </div>
 </div>
 
@@ -34,5 +39,27 @@
     <a href="Index">Back to List</a>
 </div>
 @code {
+    private EditContext editContext;
+    private StudentModelNoID StudentModel = new();
+    private string Message { get; set; }
 
+    protected override void OnInitialized()
+    {
+        editContext = new(StudentModel);
+
+    }
+    
+    private void OnSubmit()
+    {
+        if (editContext != null && editContext.Validate())
+        {
+            Student student= new Student();
+            student.FirstMidName = StudentModel.FirstMidName;
+            student.LastName = StudentModel.LastName;
+            student.EnrollmentDate = StudentModel.EnrollmentDate;
+            
+            var createdStudent = StudentService.CreateStudent(student);
+            Message = createdStudent is not null ? "Student created successfully" : "Encountered an error saving student";
+        }
+    }
 }

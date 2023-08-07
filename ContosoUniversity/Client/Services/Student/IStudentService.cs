@@ -8,6 +8,8 @@ namespace ContosoUniversity.Client.Services
         IEnumerable<Student> Students { get; set; }
         Task GetStudents();
         Task<Student> GetStudent(int studentId);
-        Task<Student?> EditStudent(Student Student);
+        Task<Student?> EditStudent(int studentId, Student student);
+        Task<bool> DeleteStudent(int studentId);
+        Task<Student?> CreateStudent(Student student);
     }
 }

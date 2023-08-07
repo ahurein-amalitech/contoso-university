@@ -81,10 +81,9 @@
             Student.FirstMidName = StudentModel.FirstMidName;
             Student.LastName = StudentModel.LastName;
             Student.EnrollmentDate = StudentModel.EnrollmentDate;
-            Student.ID = Student.ID;
 
-            var student = StudentService.EditStudent(Student);
-            message = "Student updated succesfully";
+            var student = StudentService.EditStudent(StudentId, Student);
+            message = student != null ? "Student updated successfully" : "Student not updated";
         }
     }
 }

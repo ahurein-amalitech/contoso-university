@@ -20,7 +20,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         return await _dbset.ToListAsync();
     }
 
-    public virtual async Task<T?> GetById(int id)
+    public virtual async Task<T> GetById(int id)
     {
         return await _dbset.FindAsync(id);
     }
@@ -30,10 +30,13 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         await _dbset.AddAsync(entity);
         return true;
     }
+    
 
     public virtual bool Delete(T entity)
     {
-         _dbset.Remove(entity);
-         return true;
+        _dbset.Remove(entity);
+        return true;
     }
+
+
 }

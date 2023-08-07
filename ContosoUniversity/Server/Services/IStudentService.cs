@@ -8,8 +8,8 @@ namespace ContosoUniversity.Server.Services
         Task<ActionResult<ApiResponse<IEnumerable<Student>>>> GetAllStudent();
         Task<ApiResponse<Student>> GetStudent(int studentId);
         Task<ApiResponse<CreateStudentDto>> AddStudent(CreateStudentDto student);
-
-        Task<ApiResponse<Student>> EditStudent(Student student);
+        Task<ApiResponse<EditStudentDto>> EditStudent(int studentId, EditStudentDto student);
+        Task<ApiResponse<StudentDto>> DeleteStudent(int studentId);
 
     }
 }

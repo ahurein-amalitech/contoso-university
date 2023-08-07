@@ -54,8 +54,38 @@ public class StudentService : IStudentService
         return response;
     }
 
-    public async Task<ApiResponse<Student>> EditStudent(Student student)
+    public async Task<ApiResponse<EditStudentDto>> EditStudent(int studentId, EditStudentDto studentDto)
     {
-        throw new NotImplementedException();
+        var student = _mapper.Map<Student>(studentDto);
+        bool isUpdated = await _unitOfWork.Students.Update(studentId, student);
+        var response = new ApiResponse<EditStudentDto>();
+        if (isUpdated)
+        {
+            Console.WriteLine("update successful");
+            await _unitOfWork.CommitChangesToDb();
+            response.Data = studentDto;
+        }
+        else
+        {
+            response.Success = false;
+            response.Message = "update were not successful";
+        }
+        return response;
+    }
+
+    public async Task<ApiResponse<StudentDto>> DeleteStudent(int studentId)
+    {
+        var student = await _unitOfWork.Students.GetById(studentId);
+        var response = new ApiResponse<StudentDto>();
+        if (student is not null)
+        {
+             _unitOfWork.Students.Delete(student);
+            await _unitOfWork.CommitChangesToDb();
+            response.Message = "Student deleted successfully";
+            return response;
+        }
+
+        response.Message = "Encountered an error deleting the user";
+        return response;
     }
 }
